@@ -9,7 +9,7 @@ class SaleRepository implements SaleRepositoryInterface
 {
     /**
      * Массовая вставка в таблицу через upsert
-     * g_number - уникальный идентификатор продажи
+     * nm_id - уникальный идентификатор продажи
      *
      * @param array $items
      * @return void
@@ -21,7 +21,7 @@ class SaleRepository implements SaleRepositoryInterface
         }
 
         Sale::query()->upsert(
-            $items, ['g_number'],
+            $items, ['nm_id'],
             [
                 'sale_id',
                 'nm_id',
