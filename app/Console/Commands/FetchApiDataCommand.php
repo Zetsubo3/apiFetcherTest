@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\DataFetchJob;
+use App\Jobs\FetchIncomesJob;
 use App\Jobs\FetchOrdersJob;
 use App\Jobs\FetchSalesJob;
 use App\Jobs\FetchStocksJob;
@@ -38,6 +39,10 @@ class FetchApiDataCommand extends Command
             case 'stocks':
                 $this->info('Dispatching FetchStocksJob...');
                 FetchStocksJob::dispatch();
+                break;
+            case 'incomes':
+                $this->info('Dispatching FetchIncomesJob...');
+                FetchIncomesJob::dispatch();
                 break;
             default:
                 $this->error("Unknown entity: {$entity}");

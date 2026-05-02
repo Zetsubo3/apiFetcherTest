@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Contracts\Repositories\IncomeRepositoryInterface;
 use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\SaleRepositoryInterface;
 use App\Contracts\Repositories\StockRepositoryInterface;
+use App\Repositories\IncomeRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\SaleRepository;
 use App\Repositories\StockRepository;
@@ -30,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             StockRepositoryInterface::class,
             StockRepository::class,
+        );
+
+        $this->app->bind(
+            IncomeRepositoryInterface::class,
+            IncomeRepository::class,
         );
     }
 
