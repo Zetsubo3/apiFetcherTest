@@ -27,6 +27,7 @@ class DataFetchJob implements ShouldQueue
         Log::info('DataFetchJob started - dispatching all entity jobs');
 
         FetchOrdersJob::dispatch();
+        FetchSalesJob::dispatch();
 
         Log::info('DataFetchJob dispatched all jobs');
     }

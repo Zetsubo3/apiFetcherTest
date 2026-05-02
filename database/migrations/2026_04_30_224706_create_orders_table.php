@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('g_number', 50)->unique();
-            $table->bigInteger('nm_id')->index(); //есть с отрицательным значением
+            $table->bigInteger('nm_id'); //есть с отрицательным значением
             $table->string('odid', 50)->default('0');
             $table->bigInteger('income_id')->default(0);
 
@@ -38,10 +38,11 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->index(['nm_id', 'date']);
-            $table->index(['warehouse_name', 'oblast']);
+            $table->index('nm_id');
             $table->index('supplier_article');
             $table->index('brand');
+            $table->index(['nm_id', 'date']);
+            $table->index(['warehouse_name', 'oblast']);
         });
     }
 
