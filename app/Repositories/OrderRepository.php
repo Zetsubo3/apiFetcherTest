@@ -9,7 +9,7 @@ class OrderRepository implements OrderRepositoryInterface
 {
     /**
      * Массовая вставка в таблицу через upsert
-     * g_number - идентификатор
+     * nm_id - идентификатор
      *
      * @param array $items
      * @return void
@@ -21,7 +21,7 @@ class OrderRepository implements OrderRepositoryInterface
         }
 
         Order::query()->upsert(
-            $items, ['g_number'],
+            $items, ['nm_id'],
             [
                 'nm_id',
                 'odid',

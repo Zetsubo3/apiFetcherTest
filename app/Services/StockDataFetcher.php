@@ -16,7 +16,7 @@ class StockDataFetcher
     private array $endpoint;
     private string $apiKey;
     private int $limit;
-    private int $requestDelay;
+    private int $requestDelayMs;
 
     public function __construct(
         private readonly StockRepositoryInterface $stockRepository
@@ -25,7 +25,7 @@ class StockDataFetcher
         $this->endpoint = config('api_target.endpoints');
         $this->apiKey = config('api_target.key');
         $this->limit = config('api_target.limit');
-        $this->requestDelay = config('api_target.request_delay');
+        $this->requestDelayMs = config('api_target.request_delay_ms');
     }
 
     /**
@@ -77,7 +77,7 @@ class StockDataFetcher
             gc_collect_cycles();
 
             // обход рэйт лимитера
-            sleep($this->requestDelay);
+            usleep($this->requestDelayMs * 1000);
             $page++;
 
         } while ($hasNext);

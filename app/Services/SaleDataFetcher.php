@@ -18,7 +18,7 @@ class SaleDataFetcher
     private string $dateFrom;
     private string $dateTo;
     private int $limit;
-    private int $requestDelay;
+    private int $requestDelayMs;
 
     public function __construct(
         private readonly SaleRepositoryInterface $saleRepository
@@ -29,7 +29,7 @@ class SaleDataFetcher
         $this->dateFrom = config('api_target.date_from');
         $this->dateTo = config('api_target.date_to');
         $this->limit = config('api_target.limit');
-        $this->requestDelay = config('api_target.request_delay');
+        $this->requestDelayMs = config('api_target.request_delay_ms');
     }
 
     /**
@@ -80,7 +80,7 @@ class SaleDataFetcher
             gc_collect_cycles();
 
             // обход рэйт лимитера
-            sleep($this->requestDelay);
+            usleep($this->requestDelayMs * 1000);
             $page++;
 
         } while ($hasNext);
