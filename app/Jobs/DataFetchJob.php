@@ -28,6 +28,7 @@ class DataFetchJob implements ShouldQueue
 
         FetchOrdersJob::dispatch();
         FetchSalesJob::dispatch();
+        FetchStocksJob::dispatch();
 
         Log::info('DataFetchJob dispatched all jobs');
     }

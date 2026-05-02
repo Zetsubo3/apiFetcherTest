@@ -18,6 +18,7 @@ class OrderDataFetcher
     private string $dateFrom;
     private string $dateTo;
     private int $limit;
+    private int $requestDelay;
 
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepository
@@ -28,6 +29,7 @@ class OrderDataFetcher
         $this->dateFrom = config('api_target.date_from');
         $this->dateTo = config('api_target.date_to');
         $this->limit = config('api_target.limit');
+        $this->requestDelay = config('api_target.request_delay');
     }
 
     /**
@@ -78,7 +80,7 @@ class OrderDataFetcher
             gc_collect_cycles();
 
             // обход рэйт лимитера
-            sleep(1.001);
+            sleep($this->requestDelay);
             $page++;
 
         } while ($hasNext);

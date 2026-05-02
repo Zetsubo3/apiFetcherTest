@@ -4,69 +4,66 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Contracts\Repositories\SaleRepositoryInterface;
+use App\Contracts\Repositories\StockRepositoryInterface;
 use Exception;
 
 /**
- * Продажи. Сервисный слой
+ * Остатки. Сервисный слой
  */
-class SaleDataFetcher
+class StockDataFetcher
 {
     private string $host;
     private array $endpoint;
     private string $apiKey;
-    private string $dateFrom;
-    private string $dateTo;
     private int $limit;
     private int $requestDelay;
 
     public function __construct(
-        private readonly SaleRepositoryInterface $saleRepository
+        private readonly StockRepositoryInterface $stockRepository
     ) {
         $this->host = config('api_target.host');
         $this->endpoint = config('api_target.endpoints');
         $this->apiKey = config('api_target.key');
-        $this->dateFrom = config('api_target.date_from');
-        $this->dateTo = config('api_target.date_to');
         $this->limit = config('api_target.limit');
         $this->requestDelay = config('api_target.request_delay');
     }
 
     /**
-     * Метод выгрузки продаж из целевого API
+     * Метод выгрузки остатков из целевого API
+     * Особенность: выгрузка только за текущий день
      *
      * @return void
      * @throws Exception
      */
-    public function fetchSales(): void
+    public function fetchStocks(): void
     {
         $page = 1;
         $totalFromApi = 0;
+        $today = now()->format('Y-m-d');
 
-        // подсчёт записей до выгрузки
-        $countBefore = $this->saleRepository->count();
-        Log::info('SALES. Start fetching', ['records_in_db_before' => $countBefore]);
+        $this->stockRepository->truncate();
+        $countBefore = 0;
+        Log::info('STOCKS. Start fetching', ['records_in_db_before' => $countBefore]);
 
         do {
-            $url = $this->host . $this->endpoint['sales'];
+            $url = $this->host . $this->endpoint['stocks'];
 
             $response = Http::get($url, [
-                'dateFrom' => $this->dateFrom,
-                'dateTo' => $this->dateTo,
+                'dateFrom' => $today,
                 'page' => $page,
                 'limit' => $this->limit,
                 'key' => $this->apiKey,
             ]);
 
             if (!$response->successful()) {
-                throw new Exception("Failed to fetch sales page {$page}: " . $response->status());
+                throw new Exception("Failed to fetch stocks page {$page}: " . $response->status());
             }
 
             $data = $response->json();
             if (!empty($data['data'])) {
-                $this->saleRepository->upsertBatch($data['data']);
+                $this->stockRepository->upsertBatch($data['data']);
                 $totalFromApi += count($data['data']);
-                Log::info("SALES. Page {$page} processed", [
+                Log::info("STOCKS. Page {$page} processed", [
                     'from_api' => count($data['data']),
                     'total_from_api' => $totalFromApi,
                 ]);
@@ -85,11 +82,11 @@ class SaleDataFetcher
 
         } while ($hasNext);
 
-        // Подсчёт записей после выгрузки
-        $countAfter = $this->saleRepository->count();
+        // подсчёт записей после выгрузки
+        $countAfter = $this->stockRepository->count();
         $newRecords = $countAfter - $countBefore;
 
-        Log::info('SALES. Fetching completed', [
+        Log::info('STOCKS. Fetching completed', [
             'records_in_db_before' => $countBefore,
             'records_in_db_after' => $countAfter,
             'new_records_added' => $newRecords,

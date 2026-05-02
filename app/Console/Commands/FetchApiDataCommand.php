@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\DataFetchJob;
 use App\Jobs\FetchOrdersJob;
 use App\Jobs\FetchSalesJob;
+use App\Jobs\FetchStocksJob;
 use Illuminate\Console\Command;
 
 class FetchApiDataCommand extends Command
@@ -34,12 +35,16 @@ class FetchApiDataCommand extends Command
                 $this->info('Dispatching FetchSalesJob...');
                 FetchSalesJob::dispatch();
                 break;
+            case 'stocks':
+                $this->info('Dispatching FetchStocksJob...');
+                FetchStocksJob::dispatch();
+                break;
             default:
                 $this->error("Unknown entity: {$entity}");
                 $this->info('Available entities: orders, sales, stocks, incomes');
                 return;
         }
 
-        $this->info('Job dispatched! Run "php artisan queue:work" to process it.');
+        $this->info('Job dispatched');
     }
 }
