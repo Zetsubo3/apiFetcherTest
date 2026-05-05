@@ -19,7 +19,7 @@ return [
     'date_from' => Carbon::now()->subYear()->format('Y-m-d'),
 
     'limit' => 500,
-    'request_delay_ms' => 600,
+    'request_delay_ms' => 700,
 
     'timeouts' => [
         'connection' => 10,
